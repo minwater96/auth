@@ -9,7 +9,7 @@ def signup(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('accounts:signup')
+            return redirect('accounts:login')
     else:
         form = CustomUserCreationForm()
 
@@ -24,7 +24,7 @@ def login(request):
         form = CustomAuthenticationForm(request, request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            return redirect('accounts:login')
+            return redirect('articles:index')
     else:
         form = CustomAuthenticationForm()
     
