@@ -70,3 +70,29 @@ def comment_delete(request, article_id, id):
     
 
     return redirect('articles:detail', id=article_id)
+
+def delete(request, id):
+    article = Article.objects.get(id=id)
+    if request.user == article.user:
+        article.delete()
+
+    return redirect('articles:index')
+
+def update(request, id):
+    article = Article.objects.get(id=id)
+
+    if request.user != article.user:
+        return redirect('articles:index')
+
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect('articles:detail', id=id)
+    else:
+        form = ArticleForm(instance=article)
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'form.html', context)

@@ -1,30 +1,46 @@
 {% extends 'base.html' %}
+{% load bootstrap5 %}
 
 {% block body %}
-    <h1>{{article.title}}</h1>
-    <p>article.content</p>
-    <p>article.user</p>
+    <div class="card">
+        <div calss="card-header">
+            {{article.user}}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title" >{{article.title}}</h5>
+            <p class="card-text">{{article.content}}</p>
+        </div>
+        {% if user == article.user %}
+        <div class="card-footer">
+            <form class="d-inline" action="{% url 'articles:delete' id=article.id %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="delete" class="btn btn-danger">
+            </form>
+            <form class="d-inline" action="{% url 'articles:update' id=article.id %}">
+                <input type="submit" value="update" class="btn btn-warning">
+            </form>
+        </div>
+        {% endif %}
+    </div>    
 
-    <hr>
-    
     <form action="{% url 'articles:comment_create' article_id=article.id %}" method="POST">
         {% csrf_token %}
-        {{form}}
-        <input type="submit">
+        {% bootstrap_form form %}
+        <input type="submit" class="btn-primary">
     </form>
 
     <hr>
 
     {% for comment in article.comment_set.all %}
-        <li>
+        <div calss="alert aler-light">
             {{comment.user}} - {{comment.content}}
 
             {% if user == comment.user %}
-            <form action="{% url 'articles:comment_delete' article_id=article.id id=comment.id %}" method="POST">
+            <form calss="d-inline" action="{% url 'articles:comment_delete' article_id=article.id id=comment.id %}" method="POST">
                 {% csrf_token %}
-                <input type="submit" value="delete">
+                <input type="submit" value="delete" class="btn btn-danger btn-sm">
             </form>
             {% endif %}
-        </li>
+        </div>
     {% endfor %}
 {% endblock %}
